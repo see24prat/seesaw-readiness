@@ -9,16 +9,24 @@ import json
 import datetime
 from garminconnect import Garmin
 
-EMAIL = os.environ["GARMIN_EMAIL"]
-PASSWORD = os.environ["GARMIN_PASSWORD"]
+# Resume the saved session token (minted once, with your 2FA code, in Colab).
+# Stored as a GitHub Secret named GARMINTOKENS_BASE64 - no password or MFA needed daily.
+TOKENS = os.environ["GARMINTOKENS_BASE64"]
 TODAY = datetime.date.today().isoformat()
 
 score = None
 source = None
 detail = {}
 
-client = Garmin(EMAIL, PASSWORD)
-client.login()
+client = Garmin()
+client.client.loads(TOKENS)           # load the saved Garmin session token
+try:                                  # populate display name for endpoints that need it
+    _p = client.get_user_profile()
+    _dn = (_p or {}).get("displayName")
+    if _dn:
+        client.display_name = _dn
+except Exception as _e:
+    detail["profileNote"] = str(_e)
 
 # 1) Training Readiness (best signal on Forerunner / Fenix / Epix)
 try:
