@@ -2,7 +2,7 @@ name: Garmin Readiness
 
 on:
   schedule:
-    - cron: "30 12 * * *"   # 12:30 UTC daily (~early morning US). Adjust if you like.
+    - cron: "30 11 * * *"   # 11:30 UTC = 7:30 AM ET (daylight time). GitHub uses UTC, no DST shift.
   workflow_dispatch: {}      # adds a manual "Run workflow" button for testing
 
 permissions:
