@@ -1,0 +1,32 @@
+name: Garmin Readiness
+
+on:
+  schedule:
+    - cron: "30 12 * * *"   # 12:30 UTC daily (~early morning US). Adjust if you like.
+  workflow_dispatch: {}      # adds a manual "Run workflow" button for testing
+
+permissions:
+  contents: write            # lets the job save readiness.json back to the repo
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install library
+        run: pip install garminconnect
+      - name: Pull Garmin readiness
+        env:
+          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+        run: python garmin_readiness.py
+      - name: Save readiness.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add readiness.json
+          git commit -m "Update readiness" || echo "no changes"
+          git push
