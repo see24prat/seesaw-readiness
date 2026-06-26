@@ -20,8 +20,7 @@ jobs:
         run: pip install garminconnect
       - name: Pull Garmin readiness
         env:
-          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
-          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          GARMINTOKENS_BASE64: ${{ secrets.GARMINTOKENS_BASE64 }}
         run: python garmin_readiness.py
       - name: Save readiness.json
         run: |
