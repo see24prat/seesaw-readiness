@@ -1,11 +1,11 @@
 {
-  "date": "2026-06-26",
-  "score": 66,
-  "trainingReadiness": 65,
-  "bodyBattery": 66,
+  "date": "2026-06-27",
+  "score": 43,
+  "trainingReadiness": 60,
+  "bodyBattery": 26,
   "source": "Training Readiness + Body Battery",
   "detail": {
-    "sleepScore": 74
+    "sleepScore": 65
   },
-  "updatedUTC": "2026-06-26T16:39:03.689659Z"
+  "updatedUTC": "2026-06-27T12:51:59.778755Z"
 }
