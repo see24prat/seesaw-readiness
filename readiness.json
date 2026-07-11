@@ -1,5 +1,5 @@
 {
-  "date": "2026-07-10",
+  "date": "2026-07-11",
   "score": 50,
   "trainingReadiness": null,
   "bodyBattery": null,
@@ -10,5 +10,5 @@
     "bodyBatteryError": "Authentication failed: API Error 401 - ",
     "sleepError": "Authentication failed: API Error 401 - "
   },
-  "updatedUTC": "2026-07-10T13:25:55.492220Z"
+  "updatedUTC": "2026-07-11T12:12:25.139090Z"
 }
