@@ -65,6 +65,93 @@ try:
 except Exception as e:
     detail["sleepError"] = str(e)
 
+# --- Recent activities: runs + tennis (last 7 days) ---
+cardio = {"weekTennisMin": 0, "weekTennisCount": 0, "weekRunMin": 0, "weekRunCount": 0, "recent": [], "loadFlag": "low"}
+try:
+    _start = (datetime.date.today() - datetime.timedelta(days=7)).isoformat()
+    _acts = client.get_activities_by_date(_start, TODAY) or []
+    for _a in _acts:
+        _t = ((_a.get("activityType") or {}).get("typeKey") or "").lower()
+        _dur = _a.get("duration") or _a.get("movingDuration") or 0
+        try:
+            _m = int(round(float(_dur) / 60))
+        except Exception:
+            _m = 0
+        _stl = (_a.get("startTimeLocal") or "")[:10]
+        try:
+            _ago = (datetime.date.today() - datetime.date.fromisoformat(_stl)).days if _stl else 99
+        except Exception:
+            _ago = 99
+        _is_run = "run" in _t
+        _is_tennis = "tennis" in _t
+        if _is_run:
+            cardio["weekRunMin"] += _m
+            cardio["weekRunCount"] += 1
+        if _is_tennis:
+            cardio["weekTennisMin"] += _m
+            cardio["weekTennisCount"] += 1
+        if (_is_run or _is_tennis) and _ago <= 2:
+            cardio["recent"].append({"type": "tennis" if _is_tennis else "run", "min": _m, "daysAgo": _ago})
+    _recent1 = sum(r["min"] for r in cardio["recent"] if r["daysAgo"] <= 1)
+    _long = any((r["type"] == "tennis" and r["min"] >= 75) or (r["type"] == "run" and r["min"] >= 35)
+                for r in cardio["recent"] if r["daysAgo"] <= 1)
+    if _long or _recent1 >= 90:
+        cardio["loadFlag"] = "high"
+    elif _recent1 >= 30 or cardio["recent"]:
+        cardio["loadFlag"] = "moderate"
+except Exception as e:
+    cardio["error"] = str(e)
+
+# --- Training load: acute / chronic / ratio + training status ---
+load = {}
+def _hunt(obj, keys, depth=0):
+    """Recursively find the first numeric/string value for any key name in `keys`."""
+    if depth > 6 or obj is None:
+        return None
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in keys and v is not None and not isinstance(v, (dict, list)):
+                return v
+        for v in obj.values():
+            r = _hunt(v, keys, depth + 1)
+            if r is not None:
+                return r
+    elif isinstance(obj, list):
+        for it in obj:
+            r = _hunt(it, keys, depth + 1)
+            if r is not None:
+                return r
+    return None
+
+try:
+    ts = client.get_training_status(TODAY)
+    _acute = _hunt(ts, {"dailyTrainingLoadAcute", "acuteTrainingLoad", "loadAcute"})
+    _chronic = _hunt(ts, {"dailyTrainingLoadChronic", "chronicTrainingLoad", "loadChronic"})
+    _ratio = _hunt(ts, {"dailyAcuteChronicWorkloadRatio", "acwr", "acuteChronicWorkloadRatio"})
+    _status = _hunt(ts, {"trainingStatusFeedbackPhrase", "trainingStatus", "statusPhrase"})
+    if _acute is not None:
+        load["acute"] = round(float(_acute))
+    if _chronic is not None:
+        load["chronic"] = round(float(_chronic))
+    if _ratio is not None:
+        load["acwr"] = round(float(_ratio), 2)
+    elif _acute and _chronic:
+        load["acwr"] = round(float(_acute) / float(_chronic), 2)
+    if _status is not None:
+        load["status"] = str(_status)
+except Exception as e:
+    load["error"] = str(e)
+
+# Upgrade the cardio flag if the acute:chronic ratio says you're spiking load
+_acwr = load.get("acwr")
+if _acwr is not None:
+    if _acwr >= 1.4 and cardio["loadFlag"] != "high":
+        cardio["loadFlag"] = "high"
+        cardio["flagWhy"] = "acute:chronic ratio " + str(_acwr)
+    elif _acwr >= 1.15 and cardio["loadFlag"] == "low":
+        cardio["loadFlag"] = "moderate"
+        cardio["flagWhy"] = "acute:chronic ratio " + str(_acwr)
+
 # --- Blend: average of whichever of the two we got ---
 parts = [v for v in (training_readiness, body_battery) if v is not None]
 if parts:
@@ -86,6 +173,8 @@ out = {
     "score": score,
     "trainingReadiness": training_readiness,
     "bodyBattery": body_battery,
+    "cardio": cardio,
+    "load": load,
     "source": source,
     "detail": detail,
     "updatedUTC": datetime.datetime.utcnow().isoformat() + "Z",
