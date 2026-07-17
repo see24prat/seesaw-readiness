@@ -522,6 +522,14 @@ function renderCardio(wk){
  h+='<div class="clog"><span>Tennis day:</span><button class="'+(tnday==="Sat"?"on":"")+'" data-card="tnday" data-val="Sat">Sat</button><button class="'+(tnday==="Sun"?"on":"")+'" data-card="tnday" data-val="Sun">Sun</button>';
  h+='<input type="text" inputmode="numeric" placeholder="min" value="'+tnmin+'" data-card="tnmin"><span>min tennis</span></div>';
  h+='<div class="clog"><input type="text" inputmode="numeric" placeholder="min" value="'+runmin+'" data-card="runmin"><span>total easy-run minutes this week</span></div>';
+ var c=cardioToday();
+ if(c&&c.week&&c.week.length){
+  h+='<h3>⌚ From your watch · last 7 days</h3><div class="week">';
+  c.week.slice().reverse().forEach(function(a){
+   h+='<div style="display:contents"><div class="d">'+(a.date?a.date.slice(5):"—")+'</div><div class="a">'+(a.type==="tennis"?"🎾 Tennis":"🏃 Run")+' · '+a.min+' min</div></div>';
+  });
+  h+='</div><p class="lead" style="margin-top:6px">Auto-detected by Garmin — no need to log these by hand.</p>';
+ }
  h+='</div>';
  document.getElementById("cardioLog").innerHTML=h;
 }
