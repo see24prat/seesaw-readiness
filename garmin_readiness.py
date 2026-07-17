@@ -90,6 +90,10 @@ try:
         if _is_tennis:
             cardio["weekTennisMin"] += _m
             cardio["weekTennisCount"] += 1
+        if _is_run or _is_tennis:
+            cardio.setdefault("week", []).append(
+                {"type": "tennis" if _is_tennis else "run", "min": _m, "date": _stl}
+            )
         if (_is_run or _is_tennis) and _ago <= 2:
             cardio["recent"].append({"type": "tennis" if _is_tennis else "run", "min": _m, "daysAgo": _ago})
     _recent1 = sum(r["min"] for r in cardio["recent"] if r["daysAgo"] <= 1)
