@@ -1,8 +1,20 @@
 {
-  "date": "2026-07-16",
+  "date": "2026-07-17",
   "score": 50,
   "trainingReadiness": null,
   "bodyBattery": null,
+  "cardio": {
+    "weekTennisMin": 0,
+    "weekTennisCount": 0,
+    "weekRunMin": 0,
+    "weekRunCount": 0,
+    "recent": [],
+    "loadFlag": "low",
+    "error": "Authentication failed: API Error 401 - "
+  },
+  "load": {
+    "error": "Authentication failed: API Error 401 - "
+  },
   "source": "default (no data found yet today)",
   "detail": {
     "profileNote": "Authentication failed: API Error 401 - ",
@@ -10,5 +22,5 @@
     "bodyBatteryError": "Authentication failed: API Error 401 - ",
     "sleepError": "Authentication failed: API Error 401 - "
   },
-  "updatedUTC": "2026-07-16T12:58:13.342851Z"
+  "updatedUTC": "2026-07-17T04:23:26.339028Z"
 }
