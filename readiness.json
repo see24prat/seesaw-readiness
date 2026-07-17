@@ -1,7 +1,7 @@
 {
   "date": "2026-07-17",
-  "score": 15,
-  "trainingReadiness": null,
+  "score": 48,
+  "trainingReadiness": 82,
   "bodyBattery": 15,
   "cardio": {
     "weekTennisMin": 0,
@@ -15,10 +15,17 @@
         "daysAgo": 2
       }
     ],
-    "loadFlag": "moderate"
+    "loadFlag": "moderate",
+    "week": [
+      {
+        "type": "run",
+        "min": 21,
+        "date": "2026-07-15"
+      }
+    ]
   },
   "load": {},
-  "source": "Body Battery",
+  "source": "Training Readiness + Body Battery",
   "detail": {},
-  "updatedUTC": "2026-07-17T04:51:36.321089Z"
+  "updatedUTC": "2026-07-17T05:20:41.307202Z"
 }
