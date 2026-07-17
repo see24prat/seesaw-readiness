@@ -601,8 +601,9 @@ function fetchReadiness(){
    .then(function(j){
     if(!j||j.date!==ymd(new Date()))return;
     var d=ymd(new Date()),changed=false;
-    if(j.trainingReadiness!=null&&!localStorage.getItem("ds_readiTR_"+d)){localStorage.setItem("ds_readiTR_"+d,j.trainingReadiness);changed=true;}
-    if(j.bodyBattery!=null&&!localStorage.getItem("ds_readiBB_"+d)){localStorage.setItem("ds_readiBB_"+d,j.bodyBattery);changed=true;}
+    function autoFill(prefix,val){ if(val==null)return false; var vk=prefix+d, sk=prefix+"auto_"+d; var cur=localStorage.getItem(vk); if(cur===null||cur===""||localStorage.getItem(sk)==="1"){ if(String(cur)!==String(val)){localStorage.setItem(vk,val);localStorage.setItem(sk,"1");return true;} localStorage.setItem(sk,"1"); return false;} return false;}
+    if(autoFill("ds_readiTR_",j.trainingReadiness))changed=true;
+    if(autoFill("ds_readiBB_",j.bodyBattery))changed=true;
     if(j.cardio){localStorage.setItem("ds_cardio_"+d,JSON.stringify(j.cardio));changed=true;
      var wkk=posWeek();
      if(j.cardio.weekTennisMin>0&&!localStorage.getItem("ds_tnmin_w"+wkk)){localStorage.setItem("ds_tnmin_w"+wkk,j.cardio.weekTennisMin);}
@@ -620,7 +621,7 @@ document.body.addEventListener("change",function(e){
  if(e.target.matches("input[data-log]")){localStorage.setItem("ds_log_"+e.target.getAttribute("data-log")+"_w"+selectedWeek,e.target.value.trim());}
  if(e.target.matches("input[data-card]")){localStorage.setItem("ds_"+e.target.getAttribute("data-card")+"_w"+selectedWeek,e.target.value.trim());}
  if(e.target.matches("input[data-bw]")){var v=e.target.value.trim(),key="ds_bw_"+ymd(new Date());if(v===""){localStorage.removeItem(key);}else{localStorage.setItem(key,v);}renderWeigh();renderToday();}
- if(e.target.matches("input[data-readi]")){var which=e.target.getAttribute("data-readi");var rv=e.target.value.trim();var rk=(which==="bb"?"ds_readiBB_":"ds_readiTR_")+ymd(new Date());if(rv===""){localStorage.removeItem(rk);}else{localStorage.setItem(rk,rv);}renderToday();["A","B","C"].forEach(function(k){document.getElementById("view-"+k).innerHTML=renderDay(k,selectedWeek);updateCount(k);});}
+ if(e.target.matches("input[data-readi]")){var which=e.target.getAttribute("data-readi");var rv=e.target.value.trim();var rp=(which==="bb"?"ds_readiBB_":"ds_readiTR_");var rk=rp+ymd(new Date());var rs=rp+"auto_"+ymd(new Date());if(rv===""){localStorage.removeItem(rk);localStorage.removeItem(rs);}else{localStorage.setItem(rk,rv);localStorage.setItem(rs,"0");}renderToday();["A","B","C"].forEach(function(k){document.getElementById("view-"+k).innerHTML=renderDay(k,selectedWeek);updateCount(k);});}
  if(e.target.id==="restoreFile"&&e.target.files&&e.target.files[0]){var fr=new FileReader();fr.onload=function(){try{importData(fr.result);selectedWeek=posWeek();renderAll();switchTab("backup");bkMsg("Restored ✓ from file.");}catch(_){bkMsg("That file didn't look like a backup.");}};fr.readAsText(e.target.files[0]);return;}
 });
 document.body.addEventListener("click",function(e){
