@@ -7,9 +7,15 @@ into a single 0-100 score, and writes readiness.json (committed to the repo).
 import os
 import json
 import datetime
+import pathlib
 from garminconnect import Garmin
 
-TOKENS = os.environ["GARMINTOKENS_BASE64"]
+# Token comes from .tokens.json (rotated state saved by the previous run,
+# decrypted by the workflow) - falls back to the GARMINTOKENS_BASE64 secret.
+_tk_file = pathlib.Path(".tokens.json")
+TOKENS = _tk_file.read_text().strip() if _tk_file.exists() else ""
+if not TOKENS:
+    TOKENS = os.environ.get("GARMINTOKENS_BASE64", "")
 TODAY = datetime.date.today().isoformat()
 
 detail = {}
@@ -186,5 +192,11 @@ out = {
 
 with open("readiness.json", "w") as f:
     json.dump(out, f, indent=2)
+
+# Persist the (possibly rotated/refreshed) token state for the next run.
+try:
+    _tk_file.write_text(client.client.dumps())
+except Exception as e:
+    print("token persist note:", e)
 
 print("Wrote readiness.json:", json.dumps(out))
