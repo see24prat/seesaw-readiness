@@ -148,7 +148,11 @@ try:
     elif _acute and _chronic:
         load["acwr"] = round(float(_acute) / float(_chronic), 2)
     if _status is not None:
-        load["status"] = str(_status)
+        _s = str(_status)
+        if _s.isdigit():
+            load["statusCode"] = int(_s)   # numeric code; word mapping undocumented, so don't display
+        else:
+            load["status"] = _s
 except Exception as e:
     load["error"] = str(e)
 
