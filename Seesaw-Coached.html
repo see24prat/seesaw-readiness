@@ -443,7 +443,7 @@ function cardioBanner(){
  var bits=[];
  if(c){if(c.weekTennisMin)bits.push("🎾 "+c.weekTennisMin+" min/wk");if(c.weekRunMin)bits.push("🏃 "+c.weekRunMin+" min/wk");}
  if(l&&l.acwr!=null)bits.push("load ratio "+l.acwr);
- if(l&&l.status)bits.push(String(l.status).toLowerCase().replace(/_/g," "));
+ if(l&&l.status&&!/^\d+$/.test(String(l.status)))bits.push(String(l.status).toLowerCase().replace(/_/g," "));
  var tail=bits.length?('<small>'+bits.join(" · ")+'</small>'):"";
  if(c&&c.loadFlag==="high")return '<div class="readi a">🎾 Heavy cardio load — leg lifts trimmed by 1 set today. Upper work unchanged.'+tail+'</div>';
  if(c&&c.loadFlag==="moderate")return '<div class="readi g" style="background:#eef1f6;color:var(--slate);border-color:var(--line)">Cardio load: moderate — plan runs as written.'+tail+'</div>';
