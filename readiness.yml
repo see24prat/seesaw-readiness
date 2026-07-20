@@ -12,20 +12,37 @@ jobs:
   pull:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Install library
         run: pip install garminconnect
-      - name: Pull Garmin readiness
+      - name: Prepare Garmin token
         env:
           GARMINTOKENS_BASE64: ${{ secrets.GARMINTOKENS_BASE64 }}
-        run: python garmin_readiness.py
-      - name: Save readiness.json
+          TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
         run: |
+          if [ -f garmin_token.enc ] && [ -n "$TOKEN_KEY" ]; then
+            echo "Using rotated token state from previous run"
+            openssl enc -d -aes-256-cbc -pbkdf2 -in garmin_token.enc -out .tokens.json -pass pass:"$TOKEN_KEY" || printf '%s' "$GARMINTOKENS_BASE64" > .tokens.json
+          else
+            echo "Bootstrapping token from repository secret"
+            printf '%s' "$GARMINTOKENS_BASE64" > .tokens.json
+          fi
+      - name: Pull Garmin readiness
+        run: python garmin_readiness.py
+      - name: Encrypt + save state
+        env:
+          TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+        run: |
+          if [ -n "$TOKEN_KEY" ] && [ -s .tokens.json ]; then
+            openssl enc -aes-256-cbc -pbkdf2 -in .tokens.json -out garmin_token.enc -pass pass:"$TOKEN_KEY"
+          fi
+          rm -f .tokens.json
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add readiness.json
+          [ -f garmin_token.enc ] && git add garmin_token.enc
           git commit -m "Update readiness" || echo "no changes"
           git push
