@@ -1,8 +1,8 @@
 {
-  "date": "2026-08-19",
+  "date": "2026-08-20",
   "score": 52,
-  "trainingReadiness": 60,
-  "bodyBattery": 45,
+  "trainingReadiness": 59,
+  "bodyBattery": 46,
   "cardio": {
     "weekTennisMin": 112,
     "weekTennisCount": 1,
@@ -28,10 +28,15 @@
       }
     ]
   },
-  "load": {},
+  "load": {
+    "acute": 211,
+    "chronic": 519,
+    "acwr": 0.4,
+    "statusCode": 5
+  },
   "source": "Training Readiness + Body Battery",
   "detail": {
     "sleepError": "Display name is not set. This usually means your Garmin profile is incomplete (new account with no display name configured). Please set a display name at https://connect.garmin.com and try again."
   },
-  "updatedUTC": "2026-08-19T11:49:37.215591Z"
+  "updatedUTC": "2026-08-20T11:52:40.236051Z"
 }
