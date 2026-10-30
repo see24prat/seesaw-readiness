@@ -1,8 +1,8 @@
 {
-  "date": "2026-10-29",
-  "score": 60,
-  "trainingReadiness": 65,
-  "bodyBattery": 55,
+  "date": "2026-10-30",
+  "score": 72,
+  "trainingReadiness": 73,
+  "bodyBattery": 71,
   "cardio": {
     "weekTennisMin": 0,
     "weekTennisCount": 0,
@@ -12,14 +12,14 @@
     "loadFlag": "low"
   },
   "load": {
-    "acute": 82,
-    "chronic": 253,
-    "acwr": 0.3,
+    "acute": 41,
+    "chronic": 246,
+    "acwr": 0.1,
     "statusCode": 1
   },
   "source": "Training Readiness + Body Battery",
   "detail": {
-    "sleepScore": 61
+    "sleepScore": 70
   },
-  "updatedUTC": "2026-10-29T17:29:05.861672Z"
+  "updatedUTC": "2026-10-30T17:04:45.584332Z"
 }
