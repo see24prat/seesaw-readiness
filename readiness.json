@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-19",
-  "score": 20,
-  "trainingReadiness": 15,
-  "bodyBattery": 26,
+  "date": "2026-11-20",
+  "score": 53,
+  "trainingReadiness": 51,
+  "bodyBattery": 55,
   "cardio": {
     "weekTennisMin": 0,
     "weekTennisCount": 0,
@@ -19,7 +19,7 @@
   },
   "source": "Training Readiness + Body Battery",
   "detail": {
-    "sleepScore": 48
+    "sleepScore": 79
   },
-  "updatedUTC": "2026-11-19T19:33:31.959613Z"
+  "updatedUTC": "2026-11-20T19:11:09.882999Z"
 }
